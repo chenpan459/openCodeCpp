@@ -1,0 +1,21 @@
+
+仓库地址：https://github.com/zhllxt/asio2.git
+
+    header only,不依赖boost库,不需要单独编译,在工程的Include目录中添加asio2路径,在源码中#include <asio2/asio2.hpp>即可使用;
+    支持tcp, udp, http, websocket, rpc, ssl, icmp, serial_port;
+    支持可靠UDP(基于KCP),支持SSL;
+    TCP支持各种数据拆包功能(单个字符或字符串或用户自定义协议等);
+    跨平台,支持windows,linux,macos,arm,android,32位,64位等;在msvc gcc clang ndk mingw下编译通过;
+    基于C++17,基于asio (standalone asio或boost::asio均可);
+    example目录包含大量示例代码,各种使用方法请参考示例代码;
+
+
+目前看到的很多基于asio的框架的模式大都如下:
+tcp_server server; // 声明一个server
+server.run();      // 调用run函数,run函数是阻塞的,run之后怎么退出却不知道.
+这种模式需要用户自己去处理程序退出后的逻辑,包括连接的正常关闭,
+资源释放等问题,而这些问题自己处理起来是很烦琐的.
+asio2框架已经处理过了这些问题,你可以在如MFC的OnInitDialog等地方调用server.start(...),
+start(...)函数是非阻塞的,什么时候想退出了只需要server.stop()即可.stop()是阻塞的,
+stop时如果有未发送完的数据,会保证一定在数据发送完之后才会退出,
+tcp下也会保证所有连接都正常关闭以后才会退出,你不用考虑资源的正确释放等一系列琐碎的问题.
