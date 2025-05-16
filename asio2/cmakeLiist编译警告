@@ -1,0 +1,39 @@
+-Wall 是 GCC 和 Clang 编译器中一个非常常用的选项，表示启用一组“常用”的警告信息（warnings），帮助开发者发现潜在的代码问题。
+
+✅ -Wall 的含义
+Wall 是 "Warnings All" 的缩写。
+
+它并不是开启所有警告，而是开启一组推荐的、大多数项目都应该启用的常见警告项。
+
+📌 它包括但不限于以下警告类型：
+警告类别	说明
+-Wunused-parameter	参数未使用
+-Wunused-variable	变量未使用
+-Wunused-function	函数未使用
+-Wunused-but-set-variable	变量被赋值但未使用
+-Wuninitialized	使用了未初始化的变量
+-Wreturn-type	函数没有返回值（非 void 函数）
+-Wsign-compare	有符号与无符号比较
+-Wformat	printf/scanf 等格式不匹配
+-Wmissing-braces	初始化结构体或数组时缺少大括号
+-Wparentheses	条件表达式可能需要加括号避免歧义
+-Wswitch	switch 中有未处理的 case
+-Wdeprecated-declarations	使用了弃用的函数或变量
+⚠️ 注意：-Wall 并不会包含所有警告！
+有些有用的警告默认不在 -Wall 中，例如：
+
+警告选项	描述
+-Wextra	启用额外的警告（如更严格的未使用变量检查）
+-Wpedantic	对 ISO C++ 标准严格检查
+-Werror	将所有警告视为错误
+-Wshadow	局部变量遮蔽其他变量
+-Wconversion	潜在的类型转换问题
+-Wdouble-promotion	float 自动提升为 double
+-Wcast-align	指针类型转换可能导致对齐问题
+
+所以通常建议配合使用：
+
+bash
+-Wall -Wextra -Wpedantic
+
+
