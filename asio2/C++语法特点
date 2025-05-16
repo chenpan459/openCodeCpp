@@ -272,11 +272,13 @@ typename 关键字：是在定义一个类型别名时必须使用的，用于�
     }
 
 3. 智能指针
+    std::unique_ptr：独占所有权的智能指针，对象在其生命周期结束时自动释放。
+    std::shared_ptr：共享所有权的智能指针，引用计数机制控制内存释放。
+    std::weak_ptr：弱引用智能指针，用于解决循环引用问题。
 
     智能指针是C++11引入的，用于自动管理动态分配的内存，避免内存泄漏。
 
     std::unique_ptr表示对动态分配对象的独占所有权。
-
     #include <iostream>
     #include <memory>
     using namespace std;
@@ -367,7 +369,7 @@ typename 关键字：是在定义一个类型别名时必须使用的，用于�
 
 
 7. 右值引用和移动语义
-
+    MyClass(MyClass&& other) noexcept;
     C++11引入了右值引用和移动语义，允许我们高效地管理资源。
 
     #include <iostream>
@@ -424,6 +426,7 @@ typename 关键字：是在定义一个类型别名时必须使用的，用于�
 
 
 9. 运算符重载
+    Complex operator+(const Complex& other);
     C++允许重载运算符，以便自定义类的行为。
     #include <iostream>
     using namespace std;
@@ -459,7 +462,24 @@ typename 关键字：是在定义一个类型别名时必须使用的，用于�
     类型推导：使用auto关键字自动推导变量类型。
     范围for循环：简化对容器的遍历。
 
-当然可以！接下来，我们将深入探讨一些C++的高级特性和概念，包括但不限于：
+    C++11 及以后新特性
+        auto 类型推导：编译器自动推导变量类型。
+        nullptr：替代 NULL，表示空指针。
+        override / final：控制虚函数覆盖。
+        noexcept：声明函数是否抛出异常。
+        constexpr：编译时常量计算。
+        std::optional / std::variant / std::any：增强类型安全性。
+        if constexpr：编译期条件判断。
+        std::thread / std::mutex：多线程支持
+
+    属性（Attributes）
+        特定行为标记，例如：
+        [[nodiscard]]：返回值必须被使用。
+        [[maybe_unused]]：忽略未使用警告。
+        [[fallthrough]]：switch-case 中显示允许 fall-through。
+
+
+
 11. 抽象类和接口
     在C++中，抽象类是包含至少一个纯虚函数的类。纯虚函数是没有实现的虚函数，通常用于定义接口。
     示例：抽象类和接口
@@ -503,7 +523,6 @@ typename 关键字：是在定义一个类型别名时必须使用的，用于�
 
 
 12. 命名空间
-
     命名空间用于组织代码，避免名称冲突。可以使用namespace关键字定义命名空间。
     示例：命名空间
 
@@ -662,9 +681,7 @@ typename 关键字：是在定义一个类型别名时必须使用的，用于�
         return 0;
     }
 
-
 18. 智能指针的高级用法
-
     除了std::unique_ptr和std::shared_ptr，C++11还引入了std::weak_ptr，用于解决循环引用的问题。
     示例：使用std::weak_ptr
 
@@ -721,3 +738,8 @@ typename 关键字：是在定义一个类型别名时必须使用的，用于�
         }
         return 0;
     }
+
+
+
+
+    
