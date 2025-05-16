@@ -1,0 +1,723 @@
+=====================================================================
+=====================================================================
+=================基础篇==============================================
+=====================================================================
+
+1、static_cast<unsigned char>(0) 是 C++ 中一种显式类型转换，它的作用是：
+    将整数 0 转换为 unsigned char 类型（无符号字符类型）。
+
+  static_cast<T>(value) 这是 C++ 提供的 安全、显式类型转换 语法，用来在类型之间进行转换，替代传统的 C 风格 (T)value。
+
+2、 Lambda 表达式
+  [](...) { ... }
+    是一个 Lambda 表达式，用作路由处理函数（即请求处理器）
+
+
+
+3、C++17语法特点
+  3.1[[maybe_unused]] 是什么？
+     [[maybe_unused]] 是 C++17 引入的属性（attribute），表示：
+    这个变量/函数 可能不会被使用，请编译器不要因此报 warning。  
+    warning: unused variable ‘t’ [-Wunused-variable]
+    [[maybe_unused]]	告诉编译器：这个变量可能暂时没用，不要发警告
+  
+  3.2 if constexpr
+  编译期条件判断，替代传统 enable_if 用于分支编译。
+    template<typename T>
+    void func(T t) {
+        if constexpr (std::is_integral_v<T>)
+            std::cout << "int\n";
+        else
+            std::cout << "not int\n";
+    }
+
+   3.3. 结构化绑定（Structured Bindings）
+    可直接解构 std::pair、std::tuple、结构体等。
+    std::pair<int, std::string> p{1, "hello"};
+    auto [id, name] = p;
+
+   3.4. 内联变量（inline variables）
+    允许头文件中定义全局变量而不造成重复定义。
+    inline constexpr int my_value = 42;
+
+
+   3.5 [[nodiscard]] 属性
+    强制调用者检查返回值，否则编译器可能发出警告。
+    [[nodiscard]] int compute() { return 42; }
+
+    3.6 std::optional<T>
+    可用于表达“可能没有值”的语义，替代 nullptr 或特殊值
+    std::optional<int> get_value(bool ok) {
+    if (ok) return 42;
+    return std::nullopt;
+    }
+
+    3.7 std::any
+    用于存储任意类型的值，类似于 void*，但更安全。
+    std::any a = 42;
+    a = "hello";
+
+    3.8 std::variant<T1, T2, ...>
+    用于存储任意类型中的一个，类似于 union，但更安全。
+    std::variant<int, std::string> v;
+    v = 42;
+    v = "hello";
+
+
+    | 类别    | 新特性                                         | 价值          |
+    | ----- | ------------------------------------------------| ----------- |
+    | 编译期逻辑 | `if constexpr`, `constexpr lambda`          | 更强编译期控制     |
+    | 语法简化  | 解构绑定、内联变量、命名空间简写                | 减少样板代码      |
+    | 类型工具  | `optional`, `variant`, `any`, `string_view`  | 安全 + 性能     |
+    | 并发支持  | `shared_mutex`, 内存模型改进                  | 更易写高性能多线程代码 |
+    | 标准库增强 | `filesystem`、`pmr`                         | 提升生产力       |
+
+4、关键字
+noexcept 的意思：这个函数保证 不会抛出异常。用于性能优化和函数签名标记。
+constexpr = 在编译期间就能确定值，而不是等到运行时再计算。
+typename 关键字：是在定义一个类型别名时必须使用的，用于告诉编译器，后面的类型是一个类型，而不是一个变量或值。
+
+| 分组类别                                           | 相关关键字 / 特性                              | 说明                                            |
+| ------------------------------------------------- | --------------------------------------- | --------------------------------------------- |
+| **结构化绑定**                                     | `auto`, `decltype`, `const`, `&`, `[ ]` | `auto [a, b] = pair;` 解构赋值                    |
+| **`if constexpr`**                                | `if`, `constexpr`                       | 编译期条件分支（用于模板中）                                |
+| **内联变量**                                       | `inline`                                | 支持 `inline` 修饰变量                              |
+| **折叠表达式**                                     | `...`（折叠操作符）                            | `(... + args)` 可变参数模板简化                       |
+| **模板推导指引**                                   | `template`, `auto`, `decltype`          | 编译器自动推导模板参数类型                                 |
+| **`[[nodiscard]]` 属性**                           | `[[nodiscard]]`                         | 强制使用返回值，避免误用                                  |
+| **`[[maybe_unused]]` 属性**                        | `[[maybe_unused]]`                      | 避免未使用变量警告                                     |
+| **文件系统库**                                     | ——                                      | 实际是 `<filesystem>` 库扩展，无新关键词                  |
+| **`std::variant` / `std::any` / `std::optional`** | ——                                      | 类型安全联合体和可空类型，无新关键词                            |
+| **内存对齐增强**                                   | `alignas`, `alignof`, `constexpr`       | 更强内存控制                                        |
+| **静态断言简化**                                   | `static_assert`                         | C++17 支持单参数版本                                 |
+| **命名空间嵌套简化**                               | `namespace`                             | `namespace A::B {}` 语法                        |
+| **Lambda 捕获改进**                               | `[=, this]`, `[this, a = std::move(x)]` | 支持 move-capture，`*this` 捕获                    |
+| **异常说明更新**                                   | `noexcept`                              | 更细粒度 noexcept 检查                              |
+| **并发特性扩展**                                   | `thread_local`, `constexpr`             | 与 `std::shared_mutex`, `std::scoped_lock` 等配合 |
+| **标准库更新（容器/算法）**                         | ——                                      | 非语言特性，如 `std::size`, `std::data` 等            |
+
+
+
+===================================================================
+===================================================================
+===================================================================
+
+5、数据类型转换
+
+    C++类型转换是一种改变变量或表达式的数据类型的操作。类型转换可以是隐式的，也可以是显式的。隐式转换通常由编译器自动执行，而显式转换则需要程序员明确使用某种转换方式。
+
+    （1）隐式转换
+
+    算术转换：不同类型的数值类型参与算术运算时，操作数会被转换为一个共同的更高精度的类型进行计算，避免精度丢失，如 float 与 int 运算时 int 会提升为 float，而 double 与 float 运算时 float 会提升为 double。
+
+    float f = 3.14f;
+    int i = 2;
+    double result = f + i;  // i 被提升为 float，然后 f 和 i 都转换为 double 进行计算
+
+    整数提升：在表达式中，较小的整数类型（如 char、short 或 int）可能会被提升为较大的整数类型（如 int 或 long），以确保运算结果的精度，如 char 和 int 相加时，char 会被提升为 int。
+
+    char c = 5;
+    int i = 10;
+    int result = c + i;  // c 被提升为 int，然后进行加法运算
+
+    常量转换：整数字面量在表达式中可能会被转换为更高精度的类型。
+
+    （2）显式转换
+
+    静态转换（Static Cast）可以用于基本数据类型之间以及派生类指针或引用的向上转型，它在编译时进行类型检查，不进行任何运行时类型检查。
+
+    // 基本数据类型之间的转换
+    int intValue = 10;
+    double doubleValue = static_cast<double>(intValue);
+
+    // 具有继承关系的类之间的转换
+    class Base {};
+    class Derived : public Base {};
+
+    Derived derivedObj;
+    Base* basePtr = static_cast<Base*>(&derivedObj); // 向上转型从派生类到基类总是安全的
+
+    动态转换
+
+    （Dynamic Cast）用于基类指针或引用向下转换为派生类，会在运行时检查类型。如果转换是不安全的，dynamic_cast 会对指针返回 nullptr 或对引用抛出 std::bad_cast 异常。
+
+    class Base { 
+        virtual void func() {} 
+    };
+    class Derived : public Base {};
+
+    Base* base = new Derived();
+    Derived* derived = dynamic_cast<Derived*>(base);// 将基类指针转换为派生类指针
+
+    常量转换（Const Cast）用于添加或移除 const 或 volatile 属性，不改变表达式的值，仅改变其属性类型，但这种转换应该谨慎使用，因为它可能会导致未定义行为。
+
+    const int i = 10;
+    int j = const_cast<int>(i);  // 移除 const 属性
+    j = 20;  // 现在可以修改 j 的值
+
+    volatile int i = 10;
+    int j = const_cast<int>(i);  // 移除 volatile 属性
+    // 使用 j 的值，但不再视为 volatile
+
+    const volatile int i = 10;
+    int j = const_cast<int>(i);  // 同时移除 const 和 volatile 属性
+    j = 20;  // 现在可以修改 j 的值
+
+    重新解释转换（Reinterpret Cast）用于完全不同类型之间的强制转换，不进行任何类型检查，可能会破坏类型安全，相当具有危险性。
+
+    int intValue = 10;
+    double* doublePtr = reinterpret_cast<double*>(&intValue); // 将 int* 转换为 double*
+    // 注意这里只是重新解释了指针的类型，并不意味着可以安全地使用 doublePtr 来访问 intValue 的数据
+
+    （3）类型转换注意事项
+
+        避免不必要的类型转换，因为它们可能导致意外行为或性能损失。
+        优先使用 static_cast 和 dynamic_cast，因为它们提供了编译时或运行时的类型检查。
+        谨慎使用 reinterpret_cast，因为它可能导致未定义行为。
+        避免使用 C 风格的强制转换 (type)value，因为它缺乏明确的语义且没有类型安全检查。
+
+
+6、基本运算、精度、宽度与对齐问题      
+  （1）基本数学运算
+
+    #include<cmath> 是 C++ 标准库的头文件，并在 std 命名空间中定义了一系列数学函数，它们在科学计算、工程应用和日常编程中非常有用。以下是一些常用的 #include<cmath> 函数及其简要说明：
+
+    std::abs(int i)              // 返回整数 i 的绝对值。
+    std::fabs(double x)          // 返回双精度浮点数 x 的绝对值。
+    std::exp(double x)           // 计算自然指数 e 的 x 次幂。
+    std::log(double x)           // 计算以 e 为底的 x 的对数。
+    std::log10(double x)         // 计算以 10 为底的 x 的对数。
+    std::pow(double x, double y) // 计算 x 的 y 次幂。
+    std::sqrt(double x)          // 计算 x 的平方根。
+    std::ceil(double x)          // 返回不小于 x 的最小整数。
+    std::floor(double x)         // 返回不大于 x 的最大整数。
+    std::round(double x)         // 返回最接近 x 的整数。
+
+
+=====================================================================
+=====================================================================
+=================中级篇==============================================
+=====================================================================
+
+1. 模板template
+    1.1 函数模板
+
+    函数模板允许我们定义一个函数，可以接受不同类型的参数。
+
+    #include <iostream>
+    using namespace std;
+
+    template <typename T>
+    T max(T a, T b) {
+        return (a > b) ? a : b;
+    }
+
+    int main() {
+        cout << max(10, 20) << endl; // 整数
+        cout << max(10.5, 20.5) << endl; // 浮点数
+        cout << max('A', 'B') << endl; // 字符
+        return 0;
+    }
+
+    1.2、类模板
+
+    类模板允许我们定义一个类，可以处理不同类型的数据。
+
+    #include <iostream>
+    using namespace std;
+
+    template <typename T>
+    class Pair {
+    private:
+        T first, second;
+    public:
+        Pair(T a, T b) : first(a), second(b) {}
+        T getFirst() { return first; }
+        T getSecond() { return second; }
+    };
+
+    int main() {
+        Pair<int> intPair(1, 2);
+        cout << intPair.getFirst() << ", " << intPair.getSecond() << endl;
+
+        Pair<string> strPair("Hello", "World");
+        cout << strPair.getFirst() << ", " << strPair.getSecond() << endl;
+
+        return 0;
+    }
+
+2. 标准模板库（STL）
+    STL是C++的一个重要组成部分，提供了许多通用的算法和数据结构。
+    常用容器
+        vector：动态数组
+        list：双向链表
+        deque：双端队列
+        set：集合
+        map：映射（键值对）
+    示例：使用 map
+    #include <iostream>
+    #include <map>
+    using namespace std;
+
+    int main() {
+        map<string, int> ageMap;
+        ageMap["Alice"] = 30;
+        ageMap["Bob"] = 25;
+
+        for (const auto& pair : ageMap) {
+            cout << pair.first << ": " << pair.second << endl;
+        }
+
+        return 0;
+    }
+
+3. 智能指针
+
+    智能指针是C++11引入的，用于自动管理动态分配的内存，避免内存泄漏。
+
+    std::unique_ptr表示对动态分配对象的独占所有权。
+
+    #include <iostream>
+    #include <memory>
+    using namespace std;
+
+    int main() {
+        unique_ptr<int> ptr(new int(42));
+        cout << *ptr << endl; // 输出42
+        // 不需要手动释放内存，ptr超出作用域时会自动释放
+        return 0;
+    }
+
+
+    std::shared_ptr允许多个指针共享同一个对象的所有权。
+
+    #include <iostream>
+    #include <memory>
+    using namespace std;
+
+    int main() {
+        shared_ptr<int> ptr1(new int(42));
+        {
+            shared_ptr<int> ptr2 = ptr1; // 共享所有权
+            cout << *ptr2 << endl; // 输出42
+        } // ptr2超出作用域，ptr1仍然有效
+        cout << *ptr1 << endl; // 输出42
+        return 0;
+    }
+
+4. 异常处理
+
+    C++的异常处理机制使用try、catch和throw关键字。
+
+    #include <iostream>
+    #include <stdexcept>
+    using namespace std;
+
+    double divide(double a, double b) {
+        if (b == 0) {
+            throw runtime_error("Division by zero!"); // 抛出异常
+        }
+        return a / b;
+    }
+
+    int main() {
+        try {
+            cout << divide(10, 0) << endl; // 可能抛出异常
+        } catch (const runtime_error& e) {
+            cout << "Error: " << e.what() << endl; // 捕获异常并输出
+        }
+        return 0;
+    }
+
+5. Lambda 表达式
+    C++11引入了Lambda表达式，允许我们定义匿名函数，常用于算法和回调。
+    #include <iostream>
+    #include <vector>
+    #include <algorithm>
+    using namespace std;
+
+    int main() {
+        vector<int> numbers = {1, 2, 3, 4, 5};
+        // 使用Lambda表达式打印每个元素
+        for_each(numbers.begin(), numbers.end(), [](int n) {
+            cout << n << " ";
+        });
+        cout << endl;
+        return 0;
+    }
+
+
+ 6. 多线程编程
+
+    C++11引入了对多线程的支持，提供了std::thread类。
+
+    #include <iostream>
+    #include <thread>
+    using namespace std;
+
+    void printHello() {
+        cout << "Hello from thread!" << endl;
+    }
+
+    int main() {
+        thread t(printHello); // 创建线程
+        t.join(); // 等待线程完成
+        return 0;
+    }
+
+
+7. 右值引用和移动语义
+
+    C++11引入了右值引用和移动语义，允许我们高效地管理资源。
+
+    #include <iostream>
+    #include <vector>
+    using namespace std;
+
+    class MyClass {
+    public:
+        MyClass() { cout << "Constructor" << endl; }
+        MyClass(const MyClass& other) { cout << "Copy Constructor" << endl; }
+        MyClass(MyClass&& other) noexcept { cout << "Move Constructor" << endl; }
+    };
+
+    int main() {
+        MyClass obj1; // 调用构造函数
+        MyClass obj2 = obj1; // 调用拷贝构造函数
+        MyClass obj3 = std::move(obj1); // 调用移动构造函数
+        return 0;
+    }
+
+
+8. 友元函数和友元类
+
+    友元函数和友元类可以访问类的私有成员。
+
+    #include <iostream>
+    using namespace std;
+
+    class MyClass;
+
+    class FriendClass {
+    public:
+        void show(MyClass& obj);
+    };
+
+    class MyClass {
+    private:
+        int value;
+    public:
+        MyClass(int v) : value(v) {}
+        friend class FriendClass; // 声明FriendClass为友元类
+    };
+
+    void FriendClass::show(MyClass& obj) {
+        cout << "Value: " << obj.value << endl; // 访问私有成员
+    }
+
+    int main() {
+        MyClass obj(42);
+        FriendClass friendObj;
+        friendObj.show(obj); // 输出Value: 42
+        return 0;
+    }
+
+
+9. 运算符重载
+    C++允许重载运算符，以便自定义类的行为。
+    #include <iostream>
+    using namespace std;
+
+    class Complex {
+    private:
+        double real, imag;
+    public:
+        Complex(double r, double i) : real(r), imag(i) {}
+        
+        // 重载加法运算符
+        Complex operator+(const Complex& other) {
+            return Complex(real + other.real, imag + other.imag);
+        }
+
+        void display() {
+            cout << real << " + " << imag << "i" << endl;
+        }
+    };
+
+    int main() {
+        Complex c1(1.0, 2.0);
+        Complex c2(3.0, 4.0);
+        Complex c3 = c1 + c2; // 使用重载的加法运算符
+        c3.display(); // 输出4 + 6i
+        return 0;
+    }
+
+10. 其他高级特性
+
+    抽象类和接口：使用纯虚函数定义接口。
+    命名空间：用于避免名称冲突。
+    类型推导：使用auto关键字自动推导变量类型。
+    范围for循环：简化对容器的遍历。
+
+当然可以！接下来，我们将深入探讨一些C++的高级特性和概念，包括但不限于：
+11. 抽象类和接口
+    在C++中，抽象类是包含至少一个纯虚函数的类。纯虚函数是没有实现的虚函数，通常用于定义接口。
+    示例：抽象类和接口
+
+    #include <iostream>
+    using namespace std;
+
+    // 抽象类
+    class Shape {
+    public:
+        virtual void draw() = 0; // 纯虚函数
+    };
+
+    class Circle : public Shape {
+    public:
+        void draw() override {
+            cout << "Drawing Circle" << endl;
+        }
+    };
+
+    class Square : public Shape {
+    public:
+        void draw() override {
+            cout << "Drawing Square" << endl;
+        }
+    };
+
+    void render(Shape& shape) {
+        shape.draw(); // 调用多态
+    }
+
+    int main() {
+        Circle circle;
+        Square square;
+
+        render(circle); // 输出: Drawing Circle
+        render(square); // 输出: Drawing Square
+
+        return 0;
+    }
+
+
+12. 命名空间
+
+    命名空间用于组织代码，避免名称冲突。可以使用namespace关键字定义命名空间。
+    示例：命名空间
+
+    #include <iostream>
+    using namespace std;
+
+    namespace Math {
+        const double PI = 3.14159;
+
+        double add(double a, double b) {
+            return a + b;
+        }
+    }
+
+    namespace Geometry {
+        double areaOfCircle(double radius) {
+            return Math::PI * radius * radius; // 使用Math命名空间
+        }
+    }
+
+    int main() {
+        cout << "Sum: " << Math::add(5, 3) << endl; // 输出: Sum: 8
+        cout << "Area of Circle: " << Geometry::areaOfCircle(5) << endl; // 输出: Area of Circle: 78.53975
+        return 0;
+    }
+
+13. 类型推导
+    C++11引入了auto关键字，允许编译器根据初始化表达式推导变量的类型。
+    示例：类型推导
+
+    #include <iostream>
+    #include <vector>
+    using namespace std;
+
+    int main() {
+        auto x = 10; // 整数
+        auto y = 3.14; // 浮点数
+        auto str = "Hello, World!"; // 字符串字面量
+
+        vector<int> numbers = {1, 2, 3, 4, 5};
+        for (auto n : numbers) { // 使用范围for循环
+            cout << n << " ";
+        }
+        cout << endl;
+
+        return 0;
+    }
+
+14. 范围for循环
+    C++11引入了范围for循环，使得遍历容器更加简洁。
+    示例：范围for循环
+
+    #include <iostream>
+    #include <vector>
+    using namespace std;
+
+    int main() {
+        vector<string> fruits = {"Apple", "Banana", "Cherry"};
+
+        for (const auto& fruit : fruits) { // 使用范围for循环
+            cout << fruit << endl;
+        }
+
+        return 0;
+    }
+
+
+15. std::initializer_list
+    std::initializer_list允许使用花括号初始化容器或类。
+    示例：使用std::initializer_list
+
+    #include <iostream>
+    #include <initializer_list>
+    using namespace std;
+
+    class MyList {
+    private:
+        int* data;
+        size_t size;
+    public:
+        MyList(std::initializer_list<int> list) {
+            size = list.size();
+            data = new int[size];
+            size_t i = 0;
+            for (auto& elem : list) {
+                data[i++] = elem;
+            }
+        }
+
+        ~MyList() {
+            delete[] data;
+        }
+
+        void print() {
+            for (size_t i = 0; i < size; ++i) {
+                cout << data[i] << " ";
+            }
+            cout << endl;
+        }
+    };
+
+    int main() {
+        MyList myList = {1, 2, 3, 4, 5};
+        myList.print(); // 输出: 1 2 3 4 5
+        return 0;
+    }
+
+  
+
+16. 变长模板（Variadic Templates）
+    变长模板允许我们定义可以接受任意数量参数的模板。
+    示例：变长模板
+
+    #include <iostream>
+    using namespace std;
+
+    template<typename... Args>
+    void print(Args... args) {
+        (cout << ... << args) << endl; // 使用折叠表达式
+    }
+
+    int main() {
+        print(1, 2, 3); // 输出: 123
+        print("Hello", " ", "World!"); // 输出: Hello World!
+        return 0;
+    }
+
+ 
+
+17. 线程安全和互斥量
+    C++11引入了std::mutex和其他同步原语，以支持多线程编程。
+    示例：使用互斥量
+
+    #include <iostream>
+    #include <thread>
+    #include <mutex>
+    using namespace std;
+
+    mutex mtx; // 互斥量
+
+    void printNumbers(int id) {
+        mtx.lock(); // 上锁
+        for (int i = 0; i < 5; ++i) {
+            cout << "Thread " << id << ": " << i << endl;
+        }
+        mtx.unlock(); // 解锁
+    }
+
+    int main() {
+        thread t1(printNumbers, 1);
+        thread t2(printNumbers, 2);
+
+        t1.join();
+        t2.join();
+
+        return 0;
+    }
+
+
+18. 智能指针的高级用法
+
+    除了std::unique_ptr和std::shared_ptr，C++11还引入了std::weak_ptr，用于解决循环引用的问题。
+    示例：使用std::weak_ptr
+
+    #include <iostream>
+    #include <memory>
+    using namespace std;
+
+    class Node {
+    public:
+        int value;
+        shared_ptr<Node> next;
+        weak_ptr<Node> prev; // 使用weak_ptr避免循环引用
+
+        Node(int val) : value(val) {}
+    };
+
+    int main() {
+        shared_ptr<Node> node1 = make_shared<Node>(1);
+        shared_ptr<Node> node2 = make_shared<Node>(2);
+
+        node1->next = node2;
+        node2->prev = node1; // 使用weak_ptr
+
+        cout << "Node1 value: " << node1->value << endl;
+        cout << "Node2 value: " << node2->value << endl;
+
+        return 0;
+    }
+
+
+19. 自定义异常
+
+    C++允许我们定义自己的异常类，以便更好地处理特定的错误情况。
+    示例：自定义异常
+
+    #include <iostream>
+    #include <stdexcept>
+    using namespace std;
+
+    class MyException : public runtime_error {
+    public:
+        MyException(const string& message) : runtime_error(message) {}
+    };
+
+    void testFunction() {
+        throw MyException("This is a custom exception!");
+    }
+
+    int main() {
+        try {
+            testFunction();
+        } catch (const MyException& e) {
+            cout << "Caught exception: " << e.what() << endl; // 输出自定义异常信息
+        }
+        return 0;
+    }
