@@ -1,4 +1,14 @@
 
+
+常用的 写 Excel 文件的库：
+库名	       支持读	支持写	平台	推荐用途
+libxlsxwriter	❌	  ✅	   跨平台	高效写入 Excel（.xlsx）
+xlnt	       ✅	  ✅   跨平台	读写复杂 Excel 文件
+OpenXLSX	   ✅	  ✅	  跨平台	简洁快速操作 .xlsx
+CSV (手写)	   ❌	  ✅	  所有	    最简单方式，无格式支持
+
+
+
 一、OpenXLSX 简介
 
     🌐 GitHub: https://github.com/troldal/OpenXLSX
