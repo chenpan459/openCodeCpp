@@ -1,0 +1,56 @@
+
+一、OpenXLSX 简介
+
+    🌐 GitHub: https://github.com/troldal/OpenXLSX
+
+    📦 纯 C++17 实现，无第三方依赖
+
+    ✅ 支持读/写 .xlsx 文件
+
+    ✅ 适合嵌入式、桌面开发
+
+    🧱 基于 CMake 构建
+    
+二、获取 OpenXLSX 源码
+方式 1：使用 git clone
+git clone https://github.com/troldal/OpenXLSX.git
+
+三、使用方式 1：单独构建 OpenXLSX（推荐开发调试用）
+cd OpenXLSX
+mkdir build && cd build
+cmake ..
+make -j
+sudo make install  # 可选：全局安装到系统路径
+
+四、使用方式 2：将源码嵌入你的项目（推荐移植部署）
+OpenXLSX/
+├── OpenXLSX.hpp
+├── headers/
+├── source/
+
+
+add_subdirectory(OpenXLSX)
+
+add_executable(my_app main.cpp)
+target_link_libraries(my_app OpenXLSX)
+target_include_directories(my_app PRIVATE OpenXLSX)
+
+五、编写示例代码
+#include <OpenXLSX/OpenXLSX.hpp>
+#include <iostream>
+
+int main() {
+    OpenXLSX::XLDocument doc;
+    doc.create("test.xlsx");
+
+    auto ws = doc.workbook().worksheet("Sheet1");
+    ws.cell("A1").value() = "Hello";
+    ws.cell("B1").value() = 123;
+    ws.cell("C1").value() = 3.14;
+
+    doc.save();
+    doc.close();
+
+    std::cout << "Excel file created.\n";
+    return 0;
+}
